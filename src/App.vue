@@ -6,7 +6,7 @@ import { ref, watch, onMounted } from "vue"
 let file = ""
 const content = ref([])
 const vista = ref([])
-const size = ref("")
+const size = ref("1")
 const loading = ref(false)
 const uploadedContacts = ref([])
 const loadCompleted = ref(false)
@@ -17,22 +17,23 @@ onMounted(() => {
   })
 })
 
-const downloadSample = () => {
-  fetch(`https://8j5baasof2.execute-api.us-west-2.amazonaws.com/production/tests/trucode/samples?size=${size.value}`)
-    .then((response) => response.blob())
-    .then((blob) => {
-      var file = window.URL.createObjectURL(blob)
-      var a = document.createElement("a")
-      a.href = file
-      a.download = "samples.csv"
-      document.body.appendChild(a)
-      a.click()
-      a.remove()
-    });
+const downloadSample = async () => {
+  const response = await axios.get(`https://8j5baasof2.execute-api.us-west-2.amazonaws.com/production/tests/trucode/samples?size=${size.value}`, {
+    responseType: "blob"
+  })
+  var file = window.URL.createObjectURL(response.data)
+  var a = document.createElement("a")
+  a.href = file
+  a.download = "samples.csv"
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
 };
 
 const handleFileUpload = (event) => {
   file = event.target.files[0]
+  console.log(event.target)
+  console.log(event.target.files)
   parseFile()
   loading.value = true
   loadCompleted.value = false
@@ -89,7 +90,6 @@ const getSize = (event) => {
 const getUploadedContacts = async () => {
   const response = await axios.get('https://8j5baasof2.execute-api.us-west-2.amazonaws.com/production/tests/trucode/items')
   uploadedContacts.value = response.data.items
-  console.log(uploadedContacts)
 }
 
 </script>

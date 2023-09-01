@@ -32,8 +32,6 @@ const downloadSample = async () => {
 
 const handleFileUpload = (event) => {
   file = event.target.files[0]
-  console.log(event.target)
-  console.log(event.target.files)
   parseFile()
   loading.value = true
   loadCompleted.value = false
